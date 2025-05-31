@@ -1,0 +1,135 @@
+/* 全体のスタイル */
+:root {
+    --primary-color: #4CAF50;
+    --secondary-color: #2196F3;
+    --background-color: #f5f5f5;
+    --text-color: #333;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+}
+
+/* ヘッダーのスタイル */
+header {
+    background-color: white;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+/* メインコンテンツのスタイル */
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* メニューグリッドのスタイル */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0;
+}
+
+.menu-item {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.menu-item:hover {
+    transform: translateY(-5px);
+}
+
+.menu-item h3 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.time {
+    display: inline-block;
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+}
+
+/* 詳細ページのスタイル */
+.detail-container {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 800px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.back-button {
+    display: inline-block;
+    color: var(--primary-color);
+    text-decoration: none;
+    margin-bottom: 1rem;
+}
+
+.basic-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.detail-content > div {
+    margin-bottom: 2rem;
+}
+
+.detail-content h2 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.diagram-container {
+    border: 1px solid #ddd;
+    padding: 1rem;
+    border-radius: 4px;
+    min-height: 200px;
+}
+
+/* フッターのスタイル */
+footer {
+    text-align: center;
+    padding: 2rem;
+    background-color: white;
+    margin-top: 2rem;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+    .menu-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .detail-container {
+        margin: 1rem;
+        padding: 1rem;
+    }
+} 

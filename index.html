@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>サッカーコーチ支援アプリ</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>サッカーコーチ支援アプリ</h1>
+        <p>低学年向けの練習メニューを簡単に管理・カスタマイズ</p>
+    </header>
+
+    <main>
+        <section class="menu-container">
+            <h2>練習メニュー一覧</h2>
+            <div class="menu-grid">
+                <div class="menu-item" onclick="location.href='pages/detail.html?menu=basic-dribble'">
+                    <h3>基本ドリブル</h3>
+                    <p>ボールコントロールの基礎を学ぶ</p>
+                    <span class="time">15分</span>
+                </div>
+                <div class="menu-item" onclick="location.href='pages/detail.html?menu=passing'">
+                    <h3>パス練習</h3>
+                    <p>2人組でのパス交換</p>
+                    <span class="time">20分</span>
+                </div>
+                <div class="menu-item" onclick="location.href='pages/detail.html?menu=shooting'">
+                    <h3>シュート練習</h3>
+                    <p>基本的なシュートフォーム</p>
+                    <span class="time">20分</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2024 サッカーコーチ支援アプリ</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html> 
