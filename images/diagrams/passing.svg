@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+    <!-- グリッド背景 -->
+    <rect width="400" height="300" fill="#f0f0f0"/>
+    
+    <!-- プレイヤー1 -->
+    <circle cx="100" cy="150" r="15" fill="#2196F3"/>
+    <text x="95" y="155" fill="white" font-size="20">P</text>
+    
+    <!-- プレイヤー2 -->
+    <circle cx="300" cy="150" r="15" fill="#2196F3"/>
+    <text x="295" y="155" fill="white" font-size="20">P</text>
+    
+    <!-- パスの軌跡 -->
+    <path d="M 120 150 L 280 150" 
+          fill="none" stroke="#4CAF50" stroke-width="3" stroke-dasharray="5,5"/>
+    <path d="M 280 160 L 120 160" 
+          fill="none" stroke="#4CAF50" stroke-width="3" stroke-dasharray="5,5"/>
+    
+    <!-- 距離マーカー -->
+    <line x1="100" y1="200" x2="300" y2="200" stroke="#666" stroke-width="2"/>
+    <text x="180" y="220" fill="#333" font-size="14">5-10m</text>
+    
+    <!-- 説明テキスト -->
+    <text x="10" y="50" fill="#333" font-size="14">インサイドキックでパス</text>
+    <path d="M 120 140 L 280 140" fill="none" stroke="#4CAF50" stroke-width="2"/>
+    <text x="35" y="25" fill="#333" font-size="14">パスの軌跡</text>
+</svg> 

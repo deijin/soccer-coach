@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+    <!-- グリッド背景 -->
+    <rect width="400" height="300" fill="#f0f0f0"/>
+    
+    <!-- エリアの枠 -->
+    <rect x="100" y="50" width="200" height="200" fill="none" stroke="#666" stroke-width="2"/>
+    
+    <!-- ゴール -->
+    <rect x="280" y="125" width="20" height="50" fill="none" stroke="#ff6b6b" stroke-width="3"/>
+    
+    <!-- プレイヤー（攻撃） -->
+    <circle cx="150" cy="150" r="15" fill="#2196F3"/>
+    <text x="145" y="155" fill="white" font-size="20">A</text>
+    
+    <!-- プレイヤー（守備） -->
+    <circle cx="250" cy="150" r="15" fill="#ff6b6b"/>
+    <text x="245" y="155" fill="white" font-size="20">D</text>
+    
+    <!-- ボール -->
+    <circle cx="180" cy="150" r="5" fill="#333"/>
+    
+    <!-- 説明テキスト -->
+    <text x="10" y="30" fill="#333" font-size="14">A: 攻撃プレイヤー</text>
+    <text x="10" y="50" fill="#333" font-size="14">D: 守備プレイヤー</text>
+    <text x="150" y="280" fill="#333" font-size="14">5m x 5m スペース</text>
+</svg> 

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+    <!-- グリッド背景 -->
+    <rect width="400" height="300" fill="#f0f0f0"/>
+    
+    <!-- コーン -->
+    <circle cx="100" cy="50" r="10" fill="#ff6b6b"/>
+    <circle cx="100" cy="150" r="10" fill="#ff6b6b"/>
+    <circle cx="100" cy="250" r="10" fill="#ff6b6b"/>
+    
+    <circle cx="300" cy="50" r="10" fill="#ff6b6b"/>
+    <circle cx="300" cy="150" r="10" fill="#ff6b6b"/>
+    <circle cx="300" cy="250" r="10" fill="#ff6b6b"/>
+    
+    <!-- ドリブルの軌跡 -->
+    <path d="M 80 20 Q 200 100 320 20 Q 200 200 80 280 Q 200 200 320 280" 
+          fill="none" stroke="#4CAF50" stroke-width="3" stroke-dasharray="5,5"/>
+    
+    <!-- プレイヤーの位置 -->
+    <circle cx="80" cy="20" r="15" fill="#2196F3"/>
+    <text x="75" y="25" fill="white" font-size="20">P</text>
+    
+    <!-- 説明テキスト -->
+    <text x="10" y="290" fill="#333" font-size="14">→ ドリブルの進行方向</text>
+    <circle cx="20" cy="20" r="10" fill="#ff6b6b"/>
+    <text x="35" y="25" fill="#333" font-size="14">コーン</text>
+</svg> 

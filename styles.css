@@ -123,11 +123,28 @@ main {
     margin-bottom: 1rem;
 }
 
+/* 図のスタイル */
 .diagram-container {
-    border: 1px solid #ddd;
+    background: white;
     padding: 1rem;
-    border-radius: 4px;
-    min-height: 200px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin: 1rem 0;
+}
+
+.diagram-image {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.diagram-description {
+    margin-top: 1rem;
+    color: var(--text-color);
+    font-size: 0.9rem;
+    text-align: center;
 }
 
 /* 動画セクションのスタイル */

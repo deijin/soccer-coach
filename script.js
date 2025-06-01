@@ -14,7 +14,10 @@ const trainingMenus = {
             'コーンの間をジグザグに進む',
             '最後まで到達したら、外側を走って列の最後尾に並ぶ',
         ],
-        diagram: '図の説明をここに追加',
+        diagram: {
+            image: 'images/diagrams/basic-dribble.svg',
+            description: 'コーンを使用したジグザグドリブル。矢印の方向に進む。'
+        },
         purpose: 'ボールコントロール能力の向上と、ドリブルの基本技術の習得を目指します。',
         coachingPoints: [
             'ボールを見すぎないように指導',
@@ -42,7 +45,10 @@ const trainingMenus = {
             'インサイドキックで正確なパスを出し合う',
             '徐々に距離を広げていく',
         ],
-        diagram: '図の説明をここに追加',
+        diagram: {
+            image: 'images/diagrams/passing.svg',
+            description: '2人組でのパス練習。5-10メートルの間隔で向かい合う。'
+        },
         purpose: '正確なパスの技術を身につけ、チームメイトとの連携プレーの基礎を作ります。',
         coachingPoints: [
             '軸足の位置とボールの蹴る位置を確認',
@@ -125,7 +131,10 @@ const trainingMenus = {
             '攻撃側がゴールを決めるか、守備側がボールを奪うまで続ける',
             '役割を交代して繰り返す',
         ],
-        diagram: '図の説明をここに追加',
+        diagram: {
+            image: 'images/diagrams/one-vs-one.svg',
+            description: '5メートル四方のスペースで1対1の攻防を行う。'
+        },
         purpose: '1対1の状況での攻防の基本を学びます。',
         coachingPoints: [
             'フェイントの使用を促す',
@@ -189,7 +198,15 @@ function updateDetailPage() {
     processList.innerHTML = menu.process.map(step => `<li>${step}</li>`).join('');
 
     // 図の更新
-    document.getElementById('diagramImage').textContent = menu.diagram;
+    const diagramContainer = document.getElementById('diagramImage');
+    if (menu.diagram && menu.diagram.image) {
+        diagramContainer.innerHTML = `
+            <img src="../${menu.diagram.image}" alt="${menu.title}の配置図" class="diagram-image">
+            <p class="diagram-description">${menu.diagram.description}</p>
+        `;
+    } else {
+        diagramContainer.innerHTML = '<p>この練習メニューの図はまだありません。</p>';
+    }
 
     // 目的の更新
     document.getElementById('purposeText').textContent = menu.purpose;
