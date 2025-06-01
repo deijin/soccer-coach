@@ -24,7 +24,7 @@ const trainingMenus = {
         videoUrls: [
             {
                 title: 'ドリブル練習メニュー【サッカー基礎】',
-                url: 'https://www.youtube.com/embed/YPXxCvyN5jM'
+                url: 'https://www.youtube.com/embed/xoJ2d1M9lFc'
             }
         ]
     },
@@ -52,7 +52,7 @@ const trainingMenus = {
         videoUrls: [
             {
                 title: 'パス練習メニュー【サッカー基礎】',
-                url: 'https://www.youtube.com/embed/kHIPt9KqFZs'
+                url: 'https://www.youtube.com/embed/lGcXKrs_KbA'
             }
         ]
     },
@@ -79,7 +79,7 @@ const trainingMenus = {
         videoUrls: [
             {
                 title: 'シュート練習メニュー【サッカー基礎】',
-                url: 'https://www.youtube.com/embed/0vqkrPNoZdg'
+                url: 'https://www.youtube.com/embed/ilIlLA-d2YA'
             }
         ]
     },
@@ -106,7 +106,7 @@ const trainingMenus = {
         videoUrls: [
             {
                 title: 'リフティング練習【サッカー基礎】',
-                url: 'https://www.youtube.com/embed/2-UJI2GAVxs'
+                url: 'https://www.youtube.com/embed/ujUZ0f-GR-4'
             }
         ]
     },
@@ -135,7 +135,7 @@ const trainingMenus = {
         videoUrls: [
             {
                 title: '1対1の極意【ドリブル突破】',
-                url: 'https://www.youtube.com/embed/Mf8GFfGRdJs'
+                url: 'https://www.youtube.com/embed/naEccnjzLxM'
             }
         ]
     },
