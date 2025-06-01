@@ -24,7 +24,7 @@ const trainingMenus = {
         videoUrls: [
             {
                 title: 'ドリブル練習メニュー【サッカー基礎】',
-                url: 'https://www.youtube.com/embed/Mf8GFfGRdJs'
+                url: 'https://www.youtube.com/embed/YPXxCvyN5jM'
             }
         ]
     },
@@ -48,6 +48,12 @@ const trainingMenus = {
             '軸足の位置とボールの蹴る位置を確認',
             'パスを出す前に相手の準備ができているか確認',
             'パスの強さをコントロール',
+        ],
+        videoUrls: [
+            {
+                title: 'パス練習メニュー【サッカー基礎】',
+                url: 'https://www.youtube.com/embed/kHIPt9KqFZs'
+            }
         ]
     },
     'shooting': {
@@ -69,6 +75,12 @@ const trainingMenus = {
             'シュートする際の軸足の位置',
             'インパクトの瞬間のボールを見る位置',
             'フォロースルーの大切さ',
+        ],
+        videoUrls: [
+            {
+                title: 'シュート練習メニュー【サッカー基礎】',
+                url: 'https://www.youtube.com/embed/0vqkrPNoZdg'
+            }
         ]
     },
     'lifting': {
@@ -123,7 +135,7 @@ const trainingMenus = {
         videoUrls: [
             {
                 title: '1対1の極意【ドリブル突破】',
-                url: 'https://www.youtube.com/embed/xxxxxxxxxxx'
+                url: 'https://www.youtube.com/embed/Mf8GFfGRdJs'
             }
         ]
     },
