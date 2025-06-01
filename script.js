@@ -21,7 +21,12 @@ const trainingMenus = {
             '小さなタッチでボールをコントロール',
             '体を使ってボールを守る姿勢を意識',
         ],
-        videoUrl: 'https://www.youtube.com/embed/XXXXX' // 実際の動画IDに置き換え
+        videoUrls: [
+            {
+                title: 'ドリブル練習メニュー【サッカー基礎】',
+                url: 'https://www.youtube.com/embed/Mf8GFfGRdJs'
+            }
+        ]
     },
     'passing': {
         title: 'パス練習',
@@ -86,7 +91,12 @@ const trainingMenus = {
             '膝を柔らかく使う',
             '成功体験を重視する',
         ],
-        videoUrl: 'https://www.youtube.com/embed/XXXXX'
+        videoUrls: [
+            {
+                title: 'リフティング練習【サッカー基礎】',
+                url: 'https://www.youtube.com/embed/2-UJI2GAVxs'
+            }
+        ]
     },
     'one-vs-one': {
         title: '1vs1練習',
@@ -110,7 +120,12 @@ const trainingMenus = {
             '相手との距離感を意識',
             'ボールを奪った後の展開も考える',
         ],
-        videoUrl: 'https://www.youtube.com/embed/XXXXX'
+        videoUrls: [
+            {
+                title: '1対1の極意【ドリブル突破】',
+                url: 'https://www.youtube.com/embed/xxxxxxxxxxx'
+            }
+        ]
     },
     // 他の練習メニューも同様に追加
 };
@@ -119,6 +134,26 @@ const trainingMenus = {
 function getMenuIdFromUrl() {
     const params = new URLSearchParams(window.location.search);
     return params.get('menu');
+}
+
+// ローカルストレージから追加の動画を取得
+function getCustomVideos(menuId) {
+    const customVideos = localStorage.getItem(`customVideos_${menuId}`);
+    return customVideos ? JSON.parse(customVideos) : [];
+}
+
+// ローカルストレージに追加の動画を保存
+function saveCustomVideo(menuId, videoTitle, videoUrl) {
+    const customVideos = getCustomVideos(menuId);
+    customVideos.push({ title: videoTitle, url: videoUrl });
+    localStorage.setItem(`customVideos_${menuId}`, JSON.stringify(customVideos));
+}
+
+// 動画URLをYoutube埋め込み用URLに変換
+function convertToEmbedUrl(url) {
+    // 通常のYoutube URLを埋め込み用URLに変換
+    const videoId = url.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=|\/watch\?.+&v=))([\w-]{11})/);
+    return videoId ? `https://www.youtube.com/embed/${videoId[1]}` : url;
 }
 
 // 詳細ページの内容を更新
@@ -151,13 +186,76 @@ function updateDetailPage() {
     const coachingPointsList = document.getElementById('coachingPoints');
     coachingPointsList.innerHTML = menu.coachingPoints.map(point => `<li>${point}</li>`).join('');
 
-    // 動画の更新
-    const videoContainer = document.getElementById('videoContainer');
-    if (menu.videoUrl) {
-        videoContainer.innerHTML = `<iframe src="${menu.videoUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-    } else {
-        videoContainer.innerHTML = '<p>この練習メニューの動画はまだありません。</p>';
+    // 動画セクションの更新
+    updateVideoSection(menuId, menu);
+}
+
+// 動画セクションの更新
+function updateVideoSection(menuId, menu) {
+    const videoSection = document.getElementById('videoContainer');
+    const customVideos = getCustomVideos(menuId);
+    const allVideos = [...(menu.videoUrls || []), ...customVideos];
+
+    let html = '';
+    if (allVideos.length > 0) {
+        html += '<div class="video-list">';
+        allVideos.forEach((video, index) => {
+            html += `
+                <div class="video-item">
+                    <h3>${video.title}</h3>
+                    <div class="video-wrapper">
+                        <iframe src="${video.url}" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen></iframe>
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
     }
+
+    // 動画追加フォームの表示
+    html += `
+        <div class="add-video-form">
+            <h3>参考動画を追加</h3>
+            <form id="addVideoForm" onsubmit="return addCustomVideo(event)">
+                <div class="form-group">
+                    <label for="videoTitle">タイトル:</label>
+                    <input type="text" id="videoTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="videoUrl">Youtube URL:</label>
+                    <input type="url" id="videoUrl" required>
+                </div>
+                <button type="submit">追加</button>
+            </form>
+        </div>
+    `;
+
+    videoSection.innerHTML = html;
+}
+
+// カスタム動画の追加
+function addCustomVideo(event) {
+    event.preventDefault();
+    const menuId = getMenuIdFromUrl();
+    const titleInput = document.getElementById('videoTitle');
+    const urlInput = document.getElementById('videoUrl');
+
+    const videoTitle = titleInput.value;
+    const videoUrl = convertToEmbedUrl(urlInput.value);
+
+    saveCustomVideo(menuId, videoTitle, videoUrl);
+    
+    // フォームをリセット
+    titleInput.value = '';
+    urlInput.value = '';
+
+    // 動画セクションを更新
+    updateVideoSection(menuId, trainingMenus[menuId]);
+
+    return false;
 }
 
 // ページ読み込み時に実行
