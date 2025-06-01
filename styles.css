@@ -1,9 +1,11 @@
 /* 全体のスタイル */
 :root {
-    --primary-color: #4CAF50;
-    --secondary-color: #2196F3;
-    --background-color: #f5f5f5;
-    --text-color: #333;
+    --primary-color: #FF6B6B;  /* 暖かみのある赤 */
+    --secondary-color: #4ECDC4; /* さわやかな青緑 */
+    --accent-color: #FFE66D;   /* 明るい黄色 */
+    --background-color: #F7F9FC; /* より柔らかい背景色 */
+    --text-color: #2C3E50;     /* 深みのある紺色 */
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 * {
@@ -21,15 +23,17 @@ body {
 
 /* ヘッダーのスタイル */
 header {
-    background-color: white;
-    padding: 1.5rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    padding: 2rem;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow);
 }
 
 header h1 {
-    color: var(--primary-color);
+    color: white;
     margin-bottom: 0.5rem;
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
 }
 
 /* メインコンテンツのスタイル */
@@ -44,15 +48,17 @@ main {
     margin-bottom: 3rem;
     background: white;
     padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(0,0,0,0.05);
 }
 
 .category-section h2 {
     color: var(--primary-color);
     margin-bottom: 1.5rem;
     padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--primary-color);
+    border-bottom: 3px solid var(--accent-color);
+    font-size: 1.8rem;
 }
 
 /* メニューグリッドのスタイル */
@@ -65,46 +71,62 @@ main {
 
 .menu-item {
     background: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 15px;
+    padding: 1.8rem;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(0,0,0,0.05);
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: all 0.3s ease;
 }
 
 .menu-item:hover {
     transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    border-color: var(--secondary-color);
 }
 
 .menu-item h3 {
     color: var(--primary-color);
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
 }
 
 .time {
-    display: inline-block;
     background-color: var(--secondary-color);
     color: white;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
 }
 
 /* 詳細ページのスタイル */
 .detail-container {
     background: white;
-    border-radius: 8px;
-    padding: 2rem;
+    border-radius: 15px;
+    padding: 2.5rem;
     margin: 2rem auto;
-    max-width: 800px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    max-width: 900px;
+    box-shadow: var(--shadow);
 }
 
 .back-button {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     color: var(--primary-color);
     text-decoration: none;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.back-button:hover {
+    color: var(--secondary-color);
+}
+
+.back-button:before {
+    content: '←';
+    margin-right: 0.5rem;
 }
 
 .basic-info {
@@ -164,9 +186,10 @@ main {
 }
 
 .video-item {
-    background: #f8f8f8;
-    padding: 1rem;
-    border-radius: 8px;
+    background: var(--background-color);
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
 }
 
 .video-item h3 {
@@ -190,10 +213,10 @@ main {
 }
 
 .add-video-form {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: var(--background-color);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
 }
 
 .add-video-form h3 {
@@ -213,24 +236,33 @@ main {
 
 .form-group input {
     width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 0.8rem;
+    border: 2px solid #eee;
+    border-radius: 8px;
     font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: var(--secondary-color);
+    outline: none;
 }
 
 .add-video-form button {
     background-color: var(--primary-color);
     color: white;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
     cursor: pointer;
     font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
 }
 
 .add-video-form button:hover {
-    background-color: #3d8b40;
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
 }
 
 /* レスポンシブデザイン */
@@ -249,9 +281,10 @@ main {
 /* フッターのスタイル */
 footer {
     text-align: center;
-    padding: 2rem;
-    background-color: white;
-    margin-top: 2rem;
+    padding: 3rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    margin-top: 3rem;
+    color: white;
 }
 
 /* レスポンシブデザイン */
