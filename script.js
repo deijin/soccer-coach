@@ -20,7 +20,8 @@ const trainingMenus = {
             'ボールを見すぎないように指導',
             '小さなタッチでボールをコントロール',
             '体を使ってボールを守る姿勢を意識',
-        ]
+        ],
+        videoUrl: 'https://www.youtube.com/embed/XXXXX' // 実際の動画IDに置き換え
     },
     'passing': {
         title: 'パス練習',
@@ -64,7 +65,54 @@ const trainingMenus = {
             'インパクトの瞬間のボールを見る位置',
             'フォロースルーの大切さ',
         ]
-    }
+    },
+    'lifting': {
+        title: 'リフティング練習',
+        timeRequired: '10分',
+        requiredPlayers: '1人以上',
+        equipment: [
+            'サッカーボール（1人1個）',
+        ],
+        process: [
+            'ボールを手で持って構える',
+            'ボールを落として膝で1回上げる',
+            '徐々に回数を増やしていく',
+            '慣れてきたら足も使用する',
+        ],
+        diagram: '図の説明をここに追加',
+        purpose: 'ボールタッチの感覚を養い、ボールコントロール能力を向上させます。',
+        coachingPoints: [
+            'はじめは1回から始める',
+            '膝を柔らかく使う',
+            '成功体験を重視する',
+        ],
+        videoUrl: 'https://www.youtube.com/embed/XXXXX'
+    },
+    'one-vs-one': {
+        title: '1vs1練習',
+        timeRequired: '20分',
+        requiredPlayers: '2人以上',
+        equipment: [
+            'サッカーボール',
+            'コーン 4個',
+            'ミニゴール（または2本のポール）',
+        ],
+        process: [
+            '5メートル四方のスペースを作る',
+            '1人が攻撃、1人が守備を担当',
+            '攻撃側がゴールを決めるか、守備側がボールを奪うまで続ける',
+            '役割を交代して繰り返す',
+        ],
+        diagram: '図の説明をここに追加',
+        purpose: '1対1の状況での攻防の基本を学びます。',
+        coachingPoints: [
+            'フェイントの使用を促す',
+            '相手との距離感を意識',
+            'ボールを奪った後の展開も考える',
+        ],
+        videoUrl: 'https://www.youtube.com/embed/XXXXX'
+    },
+    // 他の練習メニューも同様に追加
 };
 
 // URLからメニューIDを取得
@@ -93,7 +141,7 @@ function updateDetailPage() {
     const processList = document.getElementById('processList');
     processList.innerHTML = menu.process.map(step => `<li>${step}</li>`).join('');
 
-    // 図の更新（実際の図は後で追加）
+    // 図の更新
     document.getElementById('diagramImage').textContent = menu.diagram;
 
     // 目的の更新
@@ -102,6 +150,14 @@ function updateDetailPage() {
     // 指導ポイントの更新
     const coachingPointsList = document.getElementById('coachingPoints');
     coachingPointsList.innerHTML = menu.coachingPoints.map(point => `<li>${point}</li>`).join('');
+
+    // 動画の更新
+    const videoContainer = document.getElementById('videoContainer');
+    if (menu.videoUrl) {
+        videoContainer.innerHTML = `<iframe src="${menu.videoUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    } else {
+        videoContainer.innerHTML = '<p>この練習メニューの動画はまだありません。</p>';
+    }
 }
 
 // ページ読み込み時に実行
