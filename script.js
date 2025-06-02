@@ -453,6 +453,19 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// メニュー項目のクリックイベントを設定
+function setupMenuItemClickHandlers() {
+    const menuItems = document.querySelectorAll('.menu-item');
+    menuItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            if (!isEditMode && !e.target.classList.contains('delete-menu-button')) {
+                const menuId = item.getAttribute('data-menu');
+                window.location.href = `pages/detail.html?menu=${menuId}`;
+            }
+        });
+    });
+}
+
 // ランディングページの初期化
 function initializeLandingPage() {
     const categories = ['individual', 'pair', 'noball'];
@@ -477,4 +490,7 @@ function initializeLandingPage() {
             }
         });
     });
+
+    // メニュー項目のクリックイベントを設定
+    setupMenuItemClickHandlers();
 } 
