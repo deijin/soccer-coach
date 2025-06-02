@@ -268,7 +268,7 @@ function updateDetailPage() {
     editButton.id = 'pageEditButton';
     editButton.className = 'page-edit-button';
     editButton.innerHTML = '✎ ページを編集';
-    editButton.onclick = toggleEditMode;
+    editButton.onclick = toggleDetailEditMode;
     titleContainer.insertBefore(editButton, titleContainer.firstChild);
 
     // 各セクションに追加ボタンを設置
@@ -294,11 +294,15 @@ function updateDetailPage() {
 
     // 用具リストの更新
     const equipmentList = document.getElementById('equipmentList');
-    equipmentList.innerHTML = menu.equipment.map(item => `<li class="editable" id="equipment_${menu.equipment.indexOf(item)}">${item}</li>`).join('');
+    equipmentList.innerHTML = menu.equipment.map(item => 
+        `<li class="editable" data-original="${item}">${item}</li>`
+    ).join('');
 
     // 手順の更新
     const processList = document.getElementById('processList');
-    processList.innerHTML = menu.process.map(step => `<li class="editable" id="process_${menu.process.indexOf(step)}">${step}</li>`).join('');
+    processList.innerHTML = menu.process.map(step => 
+        `<li class="editable" data-original="${step}">${step}</li>`
+    ).join('');
 
     // 図の更新
     const diagramContainer = document.getElementById('diagramImage');
@@ -312,11 +316,14 @@ function updateDetailPage() {
     }
 
     // 目的の更新
-    document.getElementById('purposeText').innerHTML = `<div class="editable" id="purpose">${menu.purpose}</div>`;
+    document.getElementById('purposeText').innerHTML = 
+        `<div class="editable" data-original="${menu.purpose}">${menu.purpose}</div>`;
 
     // 指導ポイントの更新
     const coachingPointsList = document.getElementById('coachingPoints');
-    coachingPointsList.innerHTML = menu.coachingPoints.map(point => `<li class="editable" id="coaching_${menu.coachingPoints.indexOf(point)}">${point}</li>`).join('');
+    coachingPointsList.innerHTML = menu.coachingPoints.map(point => 
+        `<li class="editable" data-original="${point}">${point}</li>`
+    ).join('');
 
     // 動画セクションの更新
     updateVideoSection(menuId, menu);
@@ -413,7 +420,8 @@ function addNewMenuItem(categoryId) {
         process: ['手順を追加'],
         purpose: '目的を入力',
         coachingPoints: ['指導ポイントを追加'],
-        videoUrls: []
+        videoUrls: [],
+        isNew: true  // 新規メニューフラグを追加
     };
 
     // ローカルストレージにメニューを保存
@@ -438,10 +446,15 @@ function createMenuItem(menuId, menu) {
     div.className = 'menu-item';
     div.setAttribute('data-menu', menuId);
     
+    // 新規メニューの場合は、デフォルトの内容を表示
+    const title = menu.isNew ? '新しいメニュー' : menu.title;
+    const description = menu.isNew ? 'メニューの説明を入力' : menu.description;
+    const timeRequired = menu.isNew ? '15分' : menu.timeRequired;
+    
     div.innerHTML = `
-        <h3 class="editable">${menu.title}</h3>
-        <p class="editable">${menu.description || '説明を入力'}</p>
-        <span class="time editable">${menu.timeRequired}</span>
+        <h3 class="editable">${title}</h3>
+        <p class="editable">${description}</p>
+        <span class="time editable">${timeRequired}</span>
         <button class="delete-menu-button" style="display: ${isEditMode ? 'block' : 'none'}">🗑️ 削除</button>
     `;
 
@@ -632,4 +645,57 @@ async function addNewMenuItem(categoryId) {
     const menuGrid = document.querySelector(`#${categoryId} .menu-grid`);
     const menuItem = createMenuItem(newId, newMenu);
     menuGrid.appendChild(menuItem);
+}
+
+// 詳細ページの編集モードの切り替え
+function toggleDetailEditMode() {
+    const editButton = document.getElementById('pageEditButton');
+    const editableElements = document.querySelectorAll('.editable');
+    const menuId = getMenuIdFromUrl();
+
+    if (editButton.classList.contains('editing')) {
+        // 編集モードを終了
+        editButton.innerHTML = '✎ ページを編集';
+        editButton.classList.remove('editing');
+        editableElements.forEach(element => {
+            element.contentEditable = false;
+            element.classList.remove('editing');
+            
+            // 変更内容を保存
+            if (menuId.startsWith('custom_')) {
+                saveDetailPageChanges(menuId);
+            }
+        });
+    } else {
+        // 編集モードを開始
+        editButton.innerHTML = '✓ 編集を保存';
+        editButton.classList.add('editing');
+        editableElements.forEach(element => {
+            element.contentEditable = true;
+            element.classList.add('editing');
+        });
+    }
+}
+
+// 詳細ページの変更を保存
+function saveDetailPageChanges(menuId) {
+    const customMenus = JSON.parse(localStorage.getItem('customMenus') || '{}');
+    const menu = customMenus[menuId];
+    if (!menu) return;
+
+    // 各セクションの内容を取得
+    menu.title = document.getElementById('menuTitle').textContent;
+    menu.timeRequired = document.getElementById('timeRequired').textContent;
+    menu.requiredPlayers = document.getElementById('requiredPlayers').textContent;
+    menu.equipment = Array.from(document.getElementById('equipmentList').children).map(li => li.textContent);
+    menu.process = Array.from(document.getElementById('processList').children).map(li => li.textContent);
+    menu.purpose = document.getElementById('purposeText').querySelector('.editable').textContent;
+    menu.coachingPoints = Array.from(document.getElementById('coachingPoints').children).map(li => li.textContent);
+
+    // isNewフラグを削除（編集されたため）
+    delete menu.isNew;
+
+    // 更新を保存
+    customMenus[menuId] = menu;
+    localStorage.setItem('customMenus', JSON.stringify(customMenus));
 } 
