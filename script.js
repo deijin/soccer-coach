@@ -177,47 +177,36 @@ function convertToEmbedUrl(url) {
     return videoId ? `https://www.youtube.com/embed/${videoId[1]}` : url;
 }
 
-// 編集可能な要素の設定
-function makeEditable() {
+// 編集モードの状態管理
+let isEditMode = false;
+
+// 編集モードの切り替え
+function toggleEditMode() {
+    isEditMode = !isEditMode;
+    const editButton = document.getElementById('pageEditButton');
     const editableElements = document.querySelectorAll('.editable');
-    editableElements.forEach(element => {
-        // 編集ボタンの作成
-        const editButton = document.createElement('button');
-        editButton.className = 'edit-button';
-        editButton.innerHTML = '✎ 編集';
-        element.parentNode.insertBefore(editButton, element.nextSibling);
 
-        // 編集ボタンのクリックイベント
-        editButton.addEventListener('click', () => {
-            if (element.isContentEditable) {
-                // 編集モードの終了
-                element.contentEditable = false;
-                editButton.innerHTML = '✎ 編集';
-                editButton.classList.remove('editing');
-                
-                // ローカルストレージに保存
-                const pageId = window.location.search.split('=')[1];
-                const elementId = element.getAttribute('id');
-                const storageKey = `${pageId}_${elementId}`;
-                localStorage.setItem(storageKey, element.innerHTML);
-            } else {
-                // 編集モードの開始
-                element.contentEditable = true;
-                editButton.innerHTML = '✓ 保存';
-                editButton.classList.add('editing');
-                element.focus();
-            }
+    if (isEditMode) {
+        editButton.innerHTML = '✓ 編集を保存';
+        editButton.classList.add('editing');
+        editableElements.forEach(element => {
+            element.contentEditable = true;
+            element.classList.add('editing');
         });
-
-        // 保存された内容の読み込み
-        const pageId = window.location.search.split('=')[1];
-        const elementId = element.getAttribute('id');
-        const storageKey = `${pageId}_${elementId}`;
-        const savedContent = localStorage.getItem(storageKey);
-        if (savedContent) {
-            element.innerHTML = savedContent;
-        }
-    });
+    } else {
+        editButton.innerHTML = '✎ ページを編集';
+        editButton.classList.remove('editing');
+        editableElements.forEach(element => {
+            element.contentEditable = false;
+            element.classList.remove('editing');
+            
+            // 変更内容を保存
+            const pageId = window.location.search.split('=')[1];
+            const elementId = element.getAttribute('id');
+            const storageKey = `${pageId}_${elementId}`;
+            localStorage.setItem(storageKey, element.innerHTML);
+        });
+    }
 }
 
 // 詳細ページの内容を更新
@@ -226,6 +215,15 @@ function updateDetailPage() {
     if (!menuId || !trainingMenus[menuId]) return;
 
     const menu = trainingMenus[menuId];
+
+    // 編集ボタンの追加
+    const titleContainer = document.querySelector('.detail-container');
+    const editButton = document.createElement('button');
+    editButton.id = 'pageEditButton';
+    editButton.className = 'page-edit-button';
+    editButton.innerHTML = '✎ ページを編集';
+    editButton.onclick = toggleEditMode;
+    titleContainer.insertBefore(editButton, titleContainer.firstChild);
 
     // タイトルの更新
     document.getElementById('menuTitle').textContent = menu.title;
@@ -261,8 +259,16 @@ function updateDetailPage() {
     // 動画セクションの更新
     updateVideoSection(menuId, menu);
 
-    // 編集可能にする
-    makeEditable();
+    // 保存された内容の読み込み
+    const editableElements = document.querySelectorAll('.editable');
+    editableElements.forEach(element => {
+        const elementId = element.getAttribute('id');
+        const storageKey = `${menuId}_${elementId}`;
+        const savedContent = localStorage.getItem(storageKey);
+        if (savedContent) {
+            element.innerHTML = savedContent;
+        }
+    });
 }
 
 // 動画セクションの更新
