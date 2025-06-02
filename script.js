@@ -1,154 +1,253 @@
 // 練習メニューのデータ
 const trainingMenus = {
-    'basic-dribble': {
-        title: '基本ドリブル',
+    // 個人練習メニュー
+    'basic-ball-control': {
+        title: 'ボールフィーリング',
+        description: 'ボールに慣れる基本練習',
         timeRequired: '15分',
-        requiredPlayers: '4-8人',
-        equipment: [
-            'サッカーボール（1人1個）',
-            'マーカーコーン 8個',
-        ],
-        process: [
-            'コーンを8メートル間隔で2列に配置',
-            '各選手がボールを持って一列に並ぶ',
-            'コーンの間をジグザグに進む',
-            '最後まで到達したら、外側を走って列の最後尾に並ぶ',
-        ],
-        diagram: {
-            image: 'images/diagrams/basic-dribble.svg',
-            description: 'コーンを使用したジグザグドリブル。矢印の方向に進む。'
-        },
-        purpose: 'ボールコントロール能力の向上と、ドリブルの基本技術の習得を目指します。',
-        coachingPoints: [
-            'ボールを見すぎないように指導',
-            '小さなタッチでボールをコントロール',
-            '体を使ってボールを守る姿勢を意識',
-        ],
-        videoUrls: [
-            {
-                title: 'ドリブル練習メニュー【サッカー基礎】',
-                url: 'https://www.youtube.com/embed/xoJ2d1M9lFc'
-            }
-        ]
-    },
-    'passing': {
-        title: 'パス練習',
-        timeRequired: '20分',
-        requiredPlayers: '6-8人',
-        equipment: [
-            'サッカーボール（2人に1個）',
-            'マーカーコーン 4個',
-        ],
-        process: [
-            '2人1組でペアを作る',
-            '5メートル間隔で向かい合って立つ',
-            'インサイドキックで正確なパスを出し合う',
-            '徐々に距離を広げていく',
-        ],
-        diagram: {
-            image: 'images/diagrams/passing.svg',
-            description: '2人組でのパス練習。5-10メートルの間隔で向かい合う。'
-        },
-        purpose: '正確なパスの技術を身につけ、チームメイトとの連携プレーの基礎を作ります。',
-        coachingPoints: [
-            '軸足の位置とボールの蹴る位置を確認',
-            'パスを出す前に相手の準備ができているか確認',
-            'パスの強さをコントロール',
-        ],
-        videoUrls: [
-            {
-                title: 'パス練習メニュー【サッカー基礎】',
-                url: 'https://www.youtube.com/embed/lGcXKrs_KbA'
-            }
-        ]
-    },
-    'shooting': {
-        title: 'シュート練習',
-        timeRequired: '20分',
-        requiredPlayers: '6-8人',
-        equipment: [
-            'サッカーボール（3-4個）',
-            'ゴール（またはコーンで代用）',
-        ],
-        process: [
-            'ゴール前に一列に並ぶ',
-            '順番にペナルティエリア付近からシュート',
-            'シュート後は自分のボールを取りに行き、列の最後尾に並ぶ',
-        ],
-        diagram: '図の説明をここに追加',
-        purpose: '基本的なシュートフォームの習得と、ゴールへの意識付けを行います。',
-        coachingPoints: [
-            'シュートする際の軸足の位置',
-            'インパクトの瞬間のボールを見る位置',
-            'フォロースルーの大切さ',
-        ],
-        videoUrls: [
-            {
-                title: 'シュート練習メニュー【サッカー基礎】',
-                url: 'https://www.youtube.com/embed/ilIlLA-d2YA'
-            }
-        ]
-    },
-    'lifting': {
-        title: 'リフティング練習',
-        timeRequired: '10分',
         requiredPlayers: '1人以上',
         equipment: [
             'サッカーボール（1人1個）',
+            'マーカーコーン 4個'
         ],
         process: [
-            'ボールを手で持って構える',
-            'ボールを落として膝で1回上げる',
-            '徐々に回数を増やしていく',
-            '慣れてきたら足も使用する',
+            '両足の内側でボールを転がす',
+            'ボールを足の裏で前後に転がす',
+            '足の外側でボールを転がす',
+            '各動作を30秒ずつ繰り返す'
         ],
-        diagram: '図の説明をここに追加',
-        purpose: 'ボールタッチの感覚を養い、ボールコントロール能力を向上させます。',
+        diagram: {
+            image: 'images/diagrams/ball-control.svg',
+            description: '2m四方のスペースで1人ずつボールを扱う'
+        },
+        purpose: '基本的なボールタッチ感覚を養い、ボールをコントロールする自信をつけます。',
         coachingPoints: [
-            'はじめは1回から始める',
-            '膝を柔らかく使う',
-            '成功体験を重視する',
+            'ボールを優しくタッチする',
+            '急がずゆっくり行う',
+            '上手くできたら褒める'
         ],
-        videoUrls: [
-            {
-                title: 'リフティング練習【サッカー基礎】',
-                url: 'https://www.youtube.com/embed/ujUZ0f-GR-4'
-            }
-        ]
+        videoUrls: []
     },
-    'one-vs-one': {
-        title: '1vs1練習',
-        timeRequired: '20分',
+    'simple-dribble': {
+        title: 'まっすぐドリブル',
+        description: '直線的なドリブル練習',
+        timeRequired: '15分',
         requiredPlayers: '2人以上',
         equipment: [
-            'サッカーボール',
-            'コーン 4個',
-            'ミニゴール（または2本のポール）',
+            'サッカーボール（1人1個）',
+            'マーカーコーン 8個'
+        ],
+        process: [
+            'コーンを10メートル間隔で2個設置',
+            '1人ずつボールを持って一列に並ぶ',
+            'まっすぐドリブルで往復',
+            '戻ってきたら次の人がスタート'
+        ],
+        diagram: {
+            image: 'images/diagrams/straight-dribble.svg',
+            description: '10メートルの直線コースを往復'
+        },
+        purpose: 'ボールを見ながら真っ直ぐ進む基本的なドリブル技術を身につけます。',
+        coachingPoints: [
+            'ボールを優しく触る',
+            '小さなタッチで進む',
+            'ゆっくりでも良いので正確に'
+        ],
+        videoUrls: []
+    },
+    'stop-and-turn': {
+        title: 'ストップ＆ターン',
+        description: 'ボールを止めて方向転換',
+        timeRequired: '15分',
+        requiredPlayers: '2人以上',
+        equipment: [
+            'サッカーボール（1人1個）',
+            'マーカーコーン 4個'
         ],
         process: [
             '5メートル四方のスペースを作る',
-            '1人が攻撃、1人が守備を担当',
-            '攻撃側がゴールを決めるか、守備側がボールを奪うまで続ける',
-            '役割を交代して繰り返す',
+            'ドリブルで進み、合図でストップ',
+            'ボールを止めて後ろを向く',
+            '反対方向にドリブルで進む'
         ],
         diagram: {
-            image: 'images/diagrams/one-vs-one.svg',
-            description: '5メートル四方のスペースで1対1の攻防を行う。'
+            image: 'images/diagrams/stop-turn.svg',
+            description: '5メートル四方のスペースで方向転換'
         },
-        purpose: '1対1の状況での攻防の基本を学びます。',
+        purpose: 'ボールを止める技術と、方向を変える基本動作を習得します。',
         coachingPoints: [
-            'フェイントの使用を促す',
-            '相手との距離感を意識',
-            'ボールを奪った後の展開も考える',
+            'ボールをしっかり止める',
+            'バランスを保って回る',
+            '後ろの安全確認をする'
         ],
-        videoUrls: [
-            {
-                title: '1対1の極意【ドリブル突破】',
-                url: 'https://www.youtube.com/embed/naEccnjzLxM'
-            }
-        ]
+        videoUrls: []
     },
-    // 他の練習メニューも同様に追加
+
+    // 対人練習メニュー
+    'catch-the-ball': {
+        title: 'ボール取りゲーム',
+        description: '2人組でボール奪い合い',
+        timeRequired: '15分',
+        requiredPlayers: '4人以上',
+        equipment: [
+            'サッカーボール（2人に1個）',
+            'マーカーコーン 4個',
+            'ビブス'
+        ],
+        process: [
+            '2人1組でペアを作る',
+            '3メートル四方のスペースで向かい合う',
+            '片方がボールを持ち、もう片方が取る',
+            '1分ごとに役割を交代'
+        ],
+        diagram: {
+            image: 'images/diagrams/catch-ball.svg',
+            description: '2人1組で向かい合ってボール奪い合い'
+        },
+        purpose: 'ボール保持の感覚と、相手からボールを奪う基本動作を学びます。',
+        coachingPoints: [
+            '相手を観察する',
+            '安全に気をつける',
+            'フェアプレー精神を育む'
+        ],
+        videoUrls: []
+    },
+    'simple-pass': {
+        title: '的当てパス',
+        description: 'コーンを的にしたパス練習',
+        timeRequired: '15分',
+        requiredPlayers: '2人以上',
+        equipment: [
+            'サッカーボール（2人に1個）',
+            'マーカーコーン 6個'
+        ],
+        process: [
+            'コーンを三角形に並べて的を作る',
+            '5メートル離れた位置から順番にパス',
+            'コーンに当たったらポイント獲得',
+            '全員で合計点を競う'
+        ],
+        diagram: {
+            image: 'images/diagrams/target-pass.svg',
+            description: 'コーンを的にしてパスの練習'
+        },
+        purpose: '正確なパスの技術を楽しみながら身につけます。',
+        coachingPoints: [
+            'ボールを見てキックする',
+            '蹴る足の向きを意識',
+            '楽しみながら集中する'
+        ],
+        videoUrls: []
+    },
+    'mini-game': {
+        title: '3対3ミニゲーム',
+        description: '少人数での実践的な試合',
+        timeRequired: '20分',
+        requiredPlayers: '6-9人',
+        equipment: [
+            'サッカーボール',
+            'ミニゴール 2個',
+            'ビブス 2色'
+        ],
+        process: [
+            '3人対3人のチームを作る',
+            '10メートル四方のコートを使用',
+            '2分ハーフで交代制',
+            '交代の人は審判を担当'
+        ],
+        diagram: {
+            image: 'images/diagrams/mini-game.svg',
+            description: '小さなコートでの3対3の試合'
+        },
+        purpose: '実践的な状況で学んだ技術を使う機会を提供します。',
+        coachingPoints: [
+            '積極的に動く',
+            'チームメイトと協力する',
+            '全員が楽しめるように配慮'
+        ],
+        videoUrls: []
+    },
+
+    // ボールなし練習メニュー
+    'tag-game': {
+        title: '鬼ごっこ',
+        description: '動きづくりの基本練習',
+        timeRequired: '10分',
+        requiredPlayers: '6人以上',
+        equipment: [
+            'マーカーコーン 4個',
+            'ビブス（鬼用）'
+        ],
+        process: [
+            '15メートル四方のスペースを作る',
+            '鬼を1-2人決める',
+            '制限時間内で逃げ切る',
+            '捕まった人も鬼になる'
+        ],
+        diagram: {
+            image: 'images/diagrams/tag-game.svg',
+            description: '決められたエリア内での鬼ごっこ'
+        },
+        purpose: '方向転換や急な動き出しなど、サッカーの基本動作を遊びながら習得します。',
+        coachingPoints: [
+            '周りをよく見る',
+            '素早く方向転換する',
+            '安全に気をつける'
+        ],
+        videoUrls: []
+    },
+    'ladder-exercise': {
+        title: 'はしごトレーニング',
+        description: '足さばきの基本練習',
+        timeRequired: '10分',
+        requiredPlayers: '1人以上',
+        equipment: [
+            'ラダー（または線を引いて代用）'
+        ],
+        process: [
+            'ラダーを直線に設置',
+            '1マスずつ前に進む',
+            '横向きでステップ',
+            '2人で追いかけっこ'
+        ],
+        diagram: {
+            image: 'images/diagrams/ladder.svg',
+            description: 'ラダーを使った足さばき練習'
+        },
+        purpose: 'リズム感と足さばきの基本を楽しみながら身につけます。',
+        coachingPoints: [
+            'リズムよく行う',
+            '転ばないように注意',
+            '徐々にスピードを上げる'
+        ],
+        videoUrls: []
+    },
+    'balance-game': {
+        title: 'バランスゲーム',
+        description: '片足立ちなどのバランス練習',
+        timeRequired: '10分',
+        requiredPlayers: '2人以上',
+        equipment: [
+            'マーカーコーン 4個'
+        ],
+        process: [
+            '片足で30秒立つ',
+            'じゃんけんして勝った人が動きを決める',
+            '負けた人が真似をする',
+            '交互に動きを考える'
+        ],
+        diagram: {
+            image: 'images/diagrams/balance.svg',
+            description: '様々なバランス運動'
+        },
+        purpose: '体のバランス感覚を養い、ケガの予防にもつながります。',
+        coachingPoints: [
+            'ふらつかないように集中',
+            '両足均等に練習',
+            '楽しみながら行う'
+        ],
+        videoUrls: []
+    }
 };
 
 // URLからメニューIDを取得
