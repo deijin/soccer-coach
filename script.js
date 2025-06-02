@@ -177,6 +177,49 @@ function convertToEmbedUrl(url) {
     return videoId ? `https://www.youtube.com/embed/${videoId[1]}` : url;
 }
 
+// 編集可能な要素の設定
+function makeEditable() {
+    const editableElements = document.querySelectorAll('.editable');
+    editableElements.forEach(element => {
+        // 編集ボタンの作成
+        const editButton = document.createElement('button');
+        editButton.className = 'edit-button';
+        editButton.innerHTML = '✎ 編集';
+        element.parentNode.insertBefore(editButton, element.nextSibling);
+
+        // 編集ボタンのクリックイベント
+        editButton.addEventListener('click', () => {
+            if (element.isContentEditable) {
+                // 編集モードの終了
+                element.contentEditable = false;
+                editButton.innerHTML = '✎ 編集';
+                editButton.classList.remove('editing');
+                
+                // ローカルストレージに保存
+                const pageId = window.location.search.split('=')[1];
+                const elementId = element.getAttribute('id');
+                const storageKey = `${pageId}_${elementId}`;
+                localStorage.setItem(storageKey, element.innerHTML);
+            } else {
+                // 編集モードの開始
+                element.contentEditable = true;
+                editButton.innerHTML = '✓ 保存';
+                editButton.classList.add('editing');
+                element.focus();
+            }
+        });
+
+        // 保存された内容の読み込み
+        const pageId = window.location.search.split('=')[1];
+        const elementId = element.getAttribute('id');
+        const storageKey = `${pageId}_${elementId}`;
+        const savedContent = localStorage.getItem(storageKey);
+        if (savedContent) {
+            element.innerHTML = savedContent;
+        }
+    });
+}
+
 // 詳細ページの内容を更新
 function updateDetailPage() {
     const menuId = getMenuIdFromUrl();
@@ -191,32 +234,35 @@ function updateDetailPage() {
 
     // 用具リストの更新
     const equipmentList = document.getElementById('equipmentList');
-    equipmentList.innerHTML = menu.equipment.map(item => `<li>${item}</li>`).join('');
+    equipmentList.innerHTML = menu.equipment.map(item => `<li class="editable" id="equipment_${menu.equipment.indexOf(item)}">${item}</li>`).join('');
 
     // 手順の更新
     const processList = document.getElementById('processList');
-    processList.innerHTML = menu.process.map(step => `<li>${step}</li>`).join('');
+    processList.innerHTML = menu.process.map(step => `<li class="editable" id="process_${menu.process.indexOf(step)}">${step}</li>`).join('');
 
     // 図の更新
     const diagramContainer = document.getElementById('diagramImage');
     if (menu.diagram && menu.diagram.image) {
         diagramContainer.innerHTML = `
             <img src="../${menu.diagram.image}" alt="${menu.title}の配置図" class="diagram-image">
-            <p class="diagram-description">${menu.diagram.description}</p>
+            <p class="diagram-description editable" id="diagram_description">${menu.diagram.description}</p>
         `;
     } else {
-        diagramContainer.innerHTML = '<p>この練習メニューの図はまだありません。</p>';
+        diagramContainer.innerHTML = '<p class="editable" id="diagram_placeholder">この練習メニューの図はまだありません。</p>';
     }
 
     // 目的の更新
-    document.getElementById('purposeText').textContent = menu.purpose;
+    document.getElementById('purposeText').innerHTML = `<div class="editable" id="purpose">${menu.purpose}</div>`;
 
     // 指導ポイントの更新
     const coachingPointsList = document.getElementById('coachingPoints');
-    coachingPointsList.innerHTML = menu.coachingPoints.map(point => `<li>${point}</li>`).join('');
+    coachingPointsList.innerHTML = menu.coachingPoints.map(point => `<li class="editable" id="coaching_${menu.coachingPoints.indexOf(point)}">${point}</li>`).join('');
 
     // 動画セクションの更新
     updateVideoSection(menuId, menu);
+
+    // 編集可能にする
+    makeEditable();
 }
 
 // 動画セクションの更新

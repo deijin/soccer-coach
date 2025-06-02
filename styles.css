@@ -297,4 +297,54 @@ footer {
         margin: 1rem;
         padding: 1rem;
     }
+}
+
+/* 編集機能のスタイル */
+.editable {
+    position: relative;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.editable:hover {
+    background-color: rgba(78, 205, 196, 0.1);
+}
+
+.editable[contenteditable="true"] {
+    background-color: rgba(78, 205, 196, 0.2);
+    outline: 2px solid var(--secondary-color);
+    padding: 0.5rem;
+}
+
+.edit-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.edit-button:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+}
+
+.edit-button.editing {
+    background-color: var(--secondary-color);
+}
+
+/* リストアイテムの編集ボタンのレイアウト調整 */
+li.editable {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+li.editable .edit-button {
+    margin-top: -2px;
 } 
