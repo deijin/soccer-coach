@@ -539,7 +539,7 @@ function addNewMenuItem(categoryId) {
     }
 }
 
-// メニュー要素の作成
+// メニュー要素の作成（クリックイベントの重複を解消）
 function createMenuItem(menuId, menu) {
     const div = document.createElement('div');
     div.className = 'menu-item';
@@ -618,19 +618,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// メニュー項目のクリックイベントを設定
-function setupMenuItemClickHandlers() {
-    const menuItems = document.querySelectorAll('.menu-item');
-    menuItems.forEach(item => {
-        item.addEventListener('click', (e) => {
-            if (!isEditMode && !e.target.classList.contains('delete-menu-button')) {
-                const menuId = item.getAttribute('data-menu');
-                window.location.href = `pages/detail.html?menu=${menuId}`;
-            }
-        });
-    });
-}
-
 // ランディングページの初期化
 function initializeLandingPage() {
     // 編集ボタンの追加
@@ -643,6 +630,12 @@ function initializeLandingPage() {
     header.appendChild(editButton);
 
     const categories = ['individual', 'pair', 'noball'];
+    const categoryMenuMap = {
+        'individual': ['basic-ball-control', 'simple-dribble', 'stop-and-turn'],
+        'pair': ['catch-the-ball', 'simple-pass', 'mini-game'],
+        'noball': ['tag-game', 'ladder-exercise', 'balance-game']
+    };
+
     categories.forEach(categoryId => {
         // カテゴリーセクションに追加ボタンを追加
         const section = document.getElementById(categoryId);
@@ -654,23 +647,31 @@ function initializeLandingPage() {
 
         // メニューグリッドを取得
         const menuGrid = section.querySelector('.menu-grid');
+        menuGrid.innerHTML = ''; // 既存のメニューをクリア
         
-        // 標準メニューの表示
-        Object.entries(trainingMenus).forEach(([menuId, menu]) => {
-            const menuItem = createMenuItem(menuId, menu);
-            menuGrid.appendChild(menuItem);
+        // 標準メニューの表示（カテゴリーごとに3つまで）
+        const standardMenuIds = categoryMenuMap[categoryId] || [];
+        standardMenuIds.forEach(menuId => {
+            if (trainingMenus[menuId]) {
+                const menuItem = createMenuItem(menuId, trainingMenus[menuId]);
+                menuGrid.appendChild(menuItem);
+            }
         });
 
-        // カスタムメニューの表示
+        // カスタムメニューの表示（空きスペースがある場合のみ）
         const customMenus = JSON.parse(localStorage.getItem('customMenus') || '{}');
-        Object.entries(customMenus).forEach(([menuId, menu]) => {
-            const menuItem = createMenuItem(menuId, menu);
-            menuGrid.appendChild(menuItem);
-        });
+        const remainingSlots = 3 - standardMenuIds.length;
+        
+        if (remainingSlots > 0) {
+            Object.entries(customMenus)
+                .filter(([menuId]) => menuId.startsWith(`custom_${categoryId}`))
+                .slice(0, remainingSlots)
+                .forEach(([menuId, menu]) => {
+                    const menuItem = createMenuItem(menuId, menu);
+                    menuGrid.appendChild(menuItem);
+                });
+        }
     });
-
-    // メニュー項目のクリックイベントを設定
-    setupMenuItemClickHandlers();
 }
 
 // AIによる練習メニュー生成
