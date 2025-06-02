@@ -180,11 +180,12 @@ function convertToEmbedUrl(url) {
 // 編集モードの状態管理
 let isEditMode = false;
 
-// 編集モードの切り替え
-function toggleEditMode() {
+// 編集モードの切り替え（ランディングページ用）
+function toggleLandingEditMode() {
     isEditMode = !isEditMode;
-    const editButton = document.getElementById('pageEditButton');
+    const editButton = document.getElementById('landingEditButton');
     const editableElements = document.querySelectorAll('.editable');
+    const deleteButtons = document.querySelectorAll('.delete-menu-button');
 
     if (isEditMode) {
         editButton.innerHTML = '✓ 編集を保存';
@@ -193,38 +194,73 @@ function toggleEditMode() {
             element.contentEditable = true;
             element.classList.add('editing');
         });
+        deleteButtons.forEach(button => button.style.display = 'block');
     } else {
-        editButton.innerHTML = '✎ ページを編集';
+        editButton.innerHTML = '✎ メニューを編集';
         editButton.classList.remove('editing');
         editableElements.forEach(element => {
             element.contentEditable = false;
             element.classList.remove('editing');
             
-            // 変更内容を保存
-            const pageId = window.location.search.split('=')[1];
-            const elementId = element.getAttribute('id');
-            const storageKey = `${pageId}_${elementId}`;
-            localStorage.setItem(storageKey, element.innerHTML);
+            // 編集内容を保存
+            const menuItem = element.closest('.menu-item');
+            if (menuItem) {
+                const menuId = menuItem.dataset.menu;
+                // 標準メニューは編集しない
+                if (menuId.startsWith('custom_')) {
+                    saveMenuChanges(menuId);
+                }
+            }
         });
+        deleteButtons.forEach(button => button.style.display = 'none');
     }
+}
+
+// メニューの変更を保存
+function saveMenuChanges(menuId) {
+    const menuItem = document.querySelector(`.menu-item[data-menu="${menuId}"]`);
+    if (!menuItem) return;
+
+    const title = menuItem.querySelector('h3').textContent;
+    const description = menuItem.querySelector('p').textContent;
+    const time = menuItem.querySelector('.time').textContent;
+
+    // ローカルストレージから既存のメニューデータを取得
+    let savedMenus = JSON.parse(localStorage.getItem('customMenus') || '{}');
+    const existingMenu = savedMenus[menuId] || {};
+    
+    // メニューデータを更新
+    savedMenus[menuId] = {
+        ...existingMenu,
+        title: title,
+        description: description,
+        timeRequired: time
+    };
+
+    // 更新したメニューデータを保存
+    localStorage.setItem('customMenus', JSON.stringify(savedMenus));
 }
 
 // 詳細ページの内容を更新
 function updateDetailPage() {
     const menuId = getMenuIdFromUrl();
-    let menu;
-
-    // カスタムメニューの場合はローカルストレージから読み込む
-    if (menuId.startsWith('custom_')) {
-        const menuData = localStorage.getItem(`menu_${menuId}`);
-        if (menuData) {
-            menu = JSON.parse(menuData);
-        }
-    } else {
-        menu = trainingMenus[menuId];
+    if (!menuId) {
+        window.location.href = '../index.html';
+        return;
     }
 
-    if (!menu) return;
+    // 標準メニューとカスタムメニューの両方をチェック
+    let menu = trainingMenus[menuId];
+    const customMenus = JSON.parse(localStorage.getItem('customMenus') || '{}');
+    
+    if (!menu && customMenus[menuId]) {
+        menu = customMenus[menuId];
+    }
+
+    if (!menu) {
+        window.location.href = '../index.html';
+        return;
+    }
 
     // 編集ボタンの追加
     const titleContainer = document.querySelector('.detail-container');
@@ -370,6 +406,7 @@ function addNewMenuItem(categoryId) {
     const newId = `custom_${Date.now()}`;
     const newMenu = {
         title: '新しいメニュー',
+        description: 'メニューの説明を入力',
         timeRequired: '15分',
         requiredPlayers: '4-8人',
         equipment: ['必要な用具を追加'],
@@ -380,55 +417,71 @@ function addNewMenuItem(categoryId) {
     };
 
     // ローカルストレージにメニューを保存
-    const storageKey = `menu_${newId}`;
-    localStorage.setItem(storageKey, JSON.stringify(newMenu));
-
-    // カテゴリーとメニューの紐付けを保存
-    const categoryMenus = JSON.parse(localStorage.getItem(`category_${categoryId}`) || '[]');
-    categoryMenus.push(newId);
-    localStorage.setItem(`category_${categoryId}`, JSON.stringify(categoryMenus));
+    let savedMenus = JSON.parse(localStorage.getItem('customMenus') || '{}');
+    savedMenus[newId] = newMenu;
+    localStorage.setItem('customMenus', JSON.stringify(savedMenus));
 
     // 画面に新しいメニューを追加
     const menuGrid = document.querySelector(`#${categoryId} .menu-grid`);
     const menuItem = createMenuItem(newId, newMenu);
     menuGrid.appendChild(menuItem);
+
+    // 編集モードをオンにする
+    if (!isEditMode) {
+        toggleLandingEditMode();
+    }
 }
 
 // メニュー要素の作成
 function createMenuItem(menuId, menu) {
     const div = document.createElement('div');
     div.className = 'menu-item';
+    div.setAttribute('data-menu', menuId);
+    
     div.innerHTML = `
-        <h3 class="editable" id="title_${menuId}">${menu.title}</h3>
-        <p class="time editable" id="time_${menuId}">${menu.timeRequired}</p>
-        <button class="delete-menu-button" onclick="deleteMenuItem('${menuId}', this)">🗑️ 削除</button>
+        <h3 class="editable">${menu.title}</h3>
+        <p class="editable">${menu.description || '説明を入力'}</p>
+        <span class="time editable">${menu.timeRequired}</span>
+        <button class="delete-menu-button" style="display: ${isEditMode ? 'block' : 'none'}">🗑️ 削除</button>
     `;
-    div.onclick = (e) => {
-        if (!e.target.classList.contains('delete-menu-button')) {
-            window.location.href = `detail.html?menu=${menuId}`;
+
+    // 削除ボタンのイベントリスナー
+    const deleteButton = div.querySelector('.delete-menu-button');
+    deleteButton.onclick = (e) => {
+        e.stopPropagation();
+        if (confirm('このメニューを削除してもよろしいですか？')) {
+            deleteMenuItem(menuId, div);
         }
     };
+
+    // クリックイベントの設定
+    div.onclick = (e) => {
+        if (!isEditMode && !e.target.classList.contains('delete-menu-button')) {
+            window.location.href = `pages/detail.html?menu=${menuId}`;
+        }
+    };
+
+    // 編集可能な要素の設定
+    const editableElements = div.querySelectorAll('.editable');
+    editableElements.forEach(element => {
+        if (isEditMode) {
+            element.contentEditable = true;
+            element.classList.add('editing');
+        }
+    });
+
     return div;
 }
 
 // メニューの削除
-function deleteMenuItem(menuId, button) {
-    if (confirm('このメニューを削除してもよろしいですか？')) {
-        // イベントの伝播を停止
-        event.stopPropagation();
-        
-        // ローカルストレージからメニューを削除
-        localStorage.removeItem(`menu_${menuId}`);
-        
-        // カテゴリーからメニューを削除
-        const categoryId = button.closest('.category-section').id;
-        const categoryMenus = JSON.parse(localStorage.getItem(`category_${categoryId}`) || '[]');
-        const updatedMenus = categoryMenus.filter(id => id !== menuId);
-        localStorage.setItem(`category_${categoryId}`, JSON.stringify(updatedMenus));
-        
-        // 画面から要素を削除
-        button.closest('.menu-item').remove();
-    }
+function deleteMenuItem(menuId, element) {
+    // ローカルストレージからメニューを削除
+    let savedMenus = JSON.parse(localStorage.getItem('customMenus') || '{}');
+    delete savedMenus[menuId];
+    localStorage.setItem('customMenus', JSON.stringify(savedMenus));
+    
+    // 画面から要素を削除
+    element.remove();
 }
 
 // リスト項目の追加機能
@@ -468,6 +521,15 @@ function setupMenuItemClickHandlers() {
 
 // ランディングページの初期化
 function initializeLandingPage() {
+    // 編集ボタンの追加
+    const header = document.querySelector('header');
+    const editButton = document.createElement('button');
+    editButton.id = 'landingEditButton';
+    editButton.className = 'page-edit-button';
+    editButton.innerHTML = '✎ メニューを編集';
+    editButton.onclick = toggleLandingEditMode;
+    header.appendChild(editButton);
+
     const categories = ['individual', 'pair', 'noball'];
     categories.forEach(categoryId => {
         // カテゴリーセクションに追加ボタンを追加
@@ -478,19 +540,96 @@ function initializeLandingPage() {
         addButton.onclick = () => addNewMenuItem(categoryId);
         section.querySelector('h2').appendChild(addButton);
 
-        // 保存されているメニューを読み込み
-        const categoryMenus = JSON.parse(localStorage.getItem(`category_${categoryId}`) || '[]');
+        // メニューグリッドを取得
         const menuGrid = section.querySelector('.menu-grid');
         
-        categoryMenus.forEach(menuId => {
-            const menuData = JSON.parse(localStorage.getItem(`menu_${menuId}`));
-            if (menuData) {
-                const menuItem = createMenuItem(menuId, menuData);
-                menuGrid.appendChild(menuItem);
-            }
+        // 標準メニューの表示
+        Object.entries(trainingMenus).forEach(([menuId, menu]) => {
+            const menuItem = createMenuItem(menuId, menu);
+            menuGrid.appendChild(menuItem);
+        });
+
+        // カスタムメニューの表示
+        const customMenus = JSON.parse(localStorage.getItem('customMenus') || '{}');
+        Object.entries(customMenus).forEach(([menuId, menu]) => {
+            const menuItem = createMenuItem(menuId, menu);
+            menuGrid.appendChild(menuItem);
         });
     });
 
     // メニュー項目のクリックイベントを設定
     setupMenuItemClickHandlers();
+}
+
+// AIによる練習メニュー生成
+async function generateMenuWithAI(description) {
+    try {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer YOUR_API_KEY' // 実際のAPIキーに置き換える必要があります
+            },
+            body: JSON.stringify({
+                model: "gpt-3.5-turbo",
+                messages: [{
+                    role: "system",
+                    content: "あなたはサッカーコーチのアシスタントです。与えられた説明に基づいて、適切な練習メニューを生成してください。"
+                }, {
+                    role: "user",
+                    content: `以下の説明に基づいて練習メニューを作成してください：${description}`
+                }]
+            })
+        });
+
+        const data = await response.json();
+        return JSON.parse(data.choices[0].message.content);
+    } catch (error) {
+        console.error('AIメニュー生成エラー:', error);
+        return null;
+    }
+}
+
+// 新しいメニューの追加
+async function addNewMenuItem(categoryId) {
+    const description = prompt('新しい練習メニューの概要を入力してください：');
+    if (!description) return;
+
+    const newId = `custom_${Date.now()}`;
+    let newMenu;
+
+    if (description) {
+        // AIによるメニュー生成を試みる
+        const aiGeneratedMenu = await generateMenuWithAI(description);
+        if (aiGeneratedMenu) {
+            newMenu = aiGeneratedMenu;
+        }
+    }
+
+    // AIが生成できなかった場合のデフォルト値
+    if (!newMenu) {
+        newMenu = {
+            title: '新しいメニュー',
+            description: description,
+            timeRequired: '15分',
+            requiredPlayers: '4-8人',
+            equipment: ['必要な用具を追加'],
+            process: ['手順を追加'],
+            purpose: '目的を入力',
+            coachingPoints: ['指導ポイントを追加']
+        };
+    }
+
+    // ローカルストレージにメニューを保存
+    localStorage.setItem(`menu_${newId}`, JSON.stringify(newMenu));
+
+    // カテゴリーとメニューの紐付けを保存
+    const categoryMenus = JSON.parse(localStorage.getItem(`category_${categoryId}`) || '[]');
+    categoryMenus.push(newId);
+    localStorage.setItem(`category_${categoryId}`, JSON.stringify(categoryMenus));
+
+    // 画面に新しいメニューを追加
+    const menuGrid = document.querySelector(`#${categoryId} .menu-grid`);
+    const menuItem = createMenuItem(newId, newMenu);
+    menuGrid.appendChild(menuItem);
 } 
