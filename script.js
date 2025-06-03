@@ -675,76 +675,142 @@ function initializeLandingPage() {
 }
 
 // AIによる練習メニュー生成
-async function generateMenuWithAI(description) {
+async function generateMenuWithAI(title, description) {
     try {
+        const prompt = `
+サッカーの練習メニューを作成してください。
+タイトル: ${title}
+概要: ${description}
+
+以下の形式でJSONを生成してください：
+{
+    "title": "メニュー名",
+    "description": "概要説明",
+    "timeRequired": "所要時間",
+    "requiredPlayers": "必要な人数",
+    "equipment": ["必要な用具1", "必要な用具2"],
+    "process": ["手順1", "手順2", "手順3"],
+    "purpose": "練習の目的",
+    "coachingPoints": ["指導ポイント1", "指導ポイント2"],
+    "diagram": {
+        "description": "配置図の説明"
+    }
+}
+
+注意点：
+- 低学年向けの安全で分かりやすい内容にしてください
+- 時間は15-30分の範囲で設定してください
+- 手順は具体的に記述してください
+- 指導ポイントは3-5個程度にしてください
+`;
+
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer YOUR_API_KEY' // 実際のAPIキーに置き換える必要があります
+                'Authorization': `Bearer ${getOpenAIKey()}`
             },
             body: JSON.stringify({
                 model: "gpt-3.5-turbo",
                 messages: [{
                     role: "system",
-                    content: "あなたはサッカーコーチのアシスタントです。与えられた説明に基づいて、適切な練習メニューを生成してください。"
+                    content: "あなたはサッカーコーチのアシスタントです。低学年向けの練習メニューを作成してください。"
                 }, {
                     role: "user",
-                    content: `以下の説明に基づいて練習メニューを作成してください：${description}`
-                }]
+                    content: prompt
+                }],
+                temperature: 0.7
             })
         });
 
+        if (!response.ok) {
+            throw new Error('AI APIの呼び出しに失敗しました');
+        }
+
         const data = await response.json();
-        return JSON.parse(data.choices[0].message.content);
+        const generatedMenu = JSON.parse(data.choices[0].message.content);
+        return generatedMenu;
+
     } catch (error) {
-        console.error('AIメニュー生成エラー:', error);
+        console.error('メニュー生成エラー:', error);
         return null;
     }
 }
 
-// 新しいメニューの追加
+// OpenAI APIキーの取得（実際の実装では環境変数などから安全に取得する必要があります）
+function getOpenAIKey() {
+    // 注意: 実際の実装では、環境変数やサーバーサイドから安全に取得する必要があります
+    const key = localStorage.getItem('openai_api_key');
+    if (!key) {
+        const newKey = prompt('OpenAI APIキーを入力してください：');
+        if (newKey) {
+            localStorage.setItem('openai_api_key', newKey);
+            return newKey;
+        }
+        throw new Error('APIキーが設定されていません');
+    }
+    return key;
+}
+
+// 新しいメニューの追加処理を更新
 async function addNewMenuItem(categoryId) {
-    const description = prompt('新しい練習メニューの概要を入力してください：');
+    const title = prompt('新しい練習メニューの名前を入力してください：');
+    if (!title) return;
+
+    const description = prompt('練習メニューの概要を入力してください：');
     if (!description) return;
 
-    const newId = `custom_${Date.now()}`;
+    const newId = `custom_${categoryId}_${Date.now()}`;
     let newMenu;
 
-    if (description) {
+    try {
         // AIによるメニュー生成を試みる
-        const aiGeneratedMenu = await generateMenuWithAI(description);
-        if (aiGeneratedMenu) {
-            newMenu = aiGeneratedMenu;
-        }
-    }
+        const loadingMessage = document.createElement('div');
+        loadingMessage.className = 'loading-message';
+        loadingMessage.textContent = 'AIがメニューを生成中...';
+        document.body.appendChild(loadingMessage);
 
-    // AIが生成できなかった場合のデフォルト値
-    if (!newMenu) {
+        newMenu = await generateMenuWithAI(title, description);
+        
+        document.body.removeChild(loadingMessage);
+
+        if (!newMenu) {
+            throw new Error('メニュー生成に失敗しました');
+        }
+    } catch (error) {
+        console.error('AI生成エラー:', error);
+        // AIが生成できなかった場合のデフォルト値
         newMenu = {
-            title: '新しいメニュー',
+            title: title,
             description: description,
             timeRequired: '15分',
             requiredPlayers: '4-8人',
             equipment: ['必要な用具を追加'],
             process: ['手順を追加'],
             purpose: '目的を入力',
-            coachingPoints: ['指導ポイントを追加']
+            coachingPoints: ['指導ポイントを追加'],
+            diagram: {
+                description: '配置図の説明を入力'
+            }
         };
     }
 
     // ローカルストレージにメニューを保存
-    localStorage.setItem(`menu_${newId}`, JSON.stringify(newMenu));
+    let savedMenus = JSON.parse(localStorage.getItem('customMenus') || '{}');
+    savedMenus[newId] = newMenu;
+    localStorage.setItem('customMenus', JSON.stringify(savedMenus));
 
-    // カテゴリーとメニューの紐付けを保存
-    const categoryMenus = JSON.parse(localStorage.getItem(`category_${categoryId}`) || '[]');
-    categoryMenus.push(newId);
-    localStorage.setItem(`category_${categoryId}`, JSON.stringify(categoryMenus));
-
-    // 画面に新しいメニューを追加
+    // メニューグリッドを取得
     const menuGrid = document.querySelector(`#${categoryId} .menu-grid`);
-    const menuItem = createMenuItem(newId, newMenu);
-    menuGrid.appendChild(menuItem);
+    const existingMenus = menuGrid.children.length;
+
+    // 3つ未満の場合のみ新しいメニューを追加
+    if (existingMenus < 3) {
+        const menuItem = createMenuItem(newId, newMenu);
+        menuGrid.appendChild(menuItem);
+    } else {
+        alert('このカテゴリーには既に3つのメニューが登録されています。\n既存のメニューを削除してから追加してください。');
+    }
 }
 
 // 詳細ページの編集モードの切り替え
@@ -798,4 +864,22 @@ function saveDetailPageChanges(menuId) {
     // 更新を保存
     customMenus[menuId] = menu;
     localStorage.setItem('customMenus', JSON.stringify(customMenus));
-} 
+}
+
+// スタイルの追加
+const style = document.createElement('style');
+style.textContent = `
+.loading-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px 40px;
+    border-radius: 10px;
+    z-index: 1000;
+    font-weight: bold;
+}
+`;
+document.head.appendChild(style); 
